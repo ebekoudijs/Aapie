@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace Aapie
 {
-    public class Table
+    public class Database
     {
-        public User User { get; set; }
+
     }
 }
