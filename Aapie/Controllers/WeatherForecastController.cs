@@ -22,7 +22,6 @@ namespace Aapie.Controllers
         {
             _logger = logger;
         }
-        int philip = 5;
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -35,5 +34,7 @@ namespace Aapie.Controllers
             })
             .ToArray();
         }
+
+       
     }
 }
