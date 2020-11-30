@@ -8,5 +8,6 @@ namespace Aapie
     public class Table
     {
         public User User { get; set; }
+        public int Location {get; set; }
     }
 }
