@@ -43,7 +43,7 @@ namespace Aapie.Controllers
 
         public User Test()
         {
-            User NewUser = new User("pietpaulsema69", "johndeere420");
+            User NewUser = new User("pietpaulsema69", "johndeere420", "06 12345678");
             return NewUser;
         }
     }

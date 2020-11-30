@@ -9,11 +9,13 @@ namespace Aapie
     {
         public string Username { get; set; }
         public string Password { get; set; }
+        public string PhoneNumber { get; set; }
 
-        public User(string UName, string PWord)
+        public User(string UName, string PWord, string PNumber)
         {
             Username = UName;
             Password = PWord;
+            PhoneNumber = PNumber;
         }
     }
 }
