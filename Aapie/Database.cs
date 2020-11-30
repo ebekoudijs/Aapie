@@ -7,6 +7,6 @@ namespace Aapie
 {
     public class Database
     {
-
+        public lees databae alsjeblieft();
     }
 }
