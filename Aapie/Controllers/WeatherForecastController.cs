@@ -43,8 +43,11 @@ namespace Aapie.Controllers
 
         public User Test()
         {
+            //Database object creeren
             Database database = new Database();
-            database.Dbconn();
+            
+            //Insert functie van database gebruiken om sql code te executen
+            database.Insert("INSERT INTO user (username, phonenumber, password) VALUES('Pillip','0633','wachtwoord')");
 
             User NewUser = new User("pietpaulsema69", "johndeere420", "06 12345678");
             return NewUser;

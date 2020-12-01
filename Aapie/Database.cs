@@ -1,36 +1,93 @@
-﻿using MySqlConnector;
+﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-
+//gemaakt met deze tut https://www.codeproject.com/articles/43438/connect-c-to-mysql
 namespace Aapie
 {
     public class Database
     {
-        //Functie voor verbinden met database
-        public void Dbconn() {
-            //Door middel van de mysqlconnector library een nieuwe variabele declaren waarin ip-adres, username, wachtwoord en naam van de database staat om te verbinden met de database server
-            var connection = new MySqlConnection("Server=localhost;User ID=root;Password=;Database=COHRoboticstest");
-            //functie van de library om te verbinden met de database door middel van bovenstaande variabele
-            connection.Open();
-            //Commando in SQL code tussen aanhalingstekens, atm selecteert deze van alle rijen de kolom field van de database table
-            var command = new MySqlCommand("SELECT field FROM table;", connection);
-            //Script hieronder komt rechtstreeks van de library, leest per keer een rij van de tabel en print deze in de console als string
-            var reader = command.ExecuteReader();
-                 while (reader.Read())
-                    Console.WriteLine(reader.GetString(0));  
+        private MySqlConnection connection;
+        private string server;
+        private string database;
+        private string uid;
+        private string password;
+        public Database() {
+            Initialize();
+        }
+        private void Initialize() {
+            server = "localhost";
+            database = "cohroboticstest";
+            uid = "root";
+            password = "";
+            string connectionString;
+            connectionString = "SERVER=" + server + ";" + "DATABASE=" +
+            database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+
+            connection = new MySqlConnection(connectionString);
+        }
+        //open connection to database
+        public bool OpenConnection()
+        {
+            try
+            {
+                connection.Open();
+                return true;
+            }
+            catch (MySqlException exception)
+            {
+                //When handling errors, you can your application's response based 
+                //on the error number.
+                //The two most common error numbers when connecting are as follows:
+                //0: Cannot connect to server.
+                //1045: Invalid user name and/or password.
+                switch (exception.Number)
+                {
+                    case 0:
+                        Console.WriteLine("Server is offline");
+                        break;
+
+                    case 1045:
+                        Console.WriteLine("Foute credentials");
+                        break;
+                }
+                return false;
+            }
         }
 
-        public void AddOrder() {
-            
-        
+        //Close connection
+        private bool CloseConnection()
+        {
+            try
+            {
+                connection.Close();
+                return true;
+            }
+            catch (MySqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
-        public void AddUser() { 
-        
-        
+        public void Insert(string query)
+        {
+            //open connection
+            if (this.OpenConnection() == true)
+            {
+                //create command and assign the query and connection from the constructor
+                MySqlCommand cmd = new MySqlCommand(query, connection);
+
+                //Execute command
+                cmd.ExecuteNonQuery();
+
+                //close connection
+                CloseConnection();
+            }
         }
-        
+
+
     }
 }
+
