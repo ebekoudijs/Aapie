@@ -43,6 +43,9 @@ namespace Aapie.Controllers
 
         public User Test()
         {
+            Database database = new Database();
+            database.Dbconn();
+
             User NewUser = new User("pietpaulsema69", "johndeere420", "06 12345678");
             return NewUser;
         }
