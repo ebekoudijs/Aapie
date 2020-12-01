@@ -9,11 +9,14 @@ namespace Aapie
 {
     public class Database
     {
+        //datafields initialiseren
         private MySqlConnection connection;
         private string server;
         private string database;
         private string uid;
         private string password;
+        
+        //de constructor roept standaard de initliaseer functie aan, welke waardes geeft aan alle nodige datafields voor een verbinding
         public Database() {
             Initialize();
         }
@@ -28,7 +31,8 @@ namespace Aapie
 
             connection = new MySqlConnection(connectionString);
         }
-        //open connection to database
+        
+        //Nu alle instellingen goed staan kan je met deze functie een verbinding naar de database openen, try catch zo ergt ervoor dat het programma niet crasht als er geen verbinding mogelijk is met de database
         public bool OpenConnection()
         {
             try
@@ -38,11 +42,7 @@ namespace Aapie
             }
             catch (MySqlException exception)
             {
-                //When handling errors, you can your application's response based 
-                //on the error number.
-                //The two most common error numbers when connecting are as follows:
-                //0: Cannot connect to server.
-                //1045: Invalid user name and/or password.
+                //Als er een mysql error is wordt ie doorgegeven naar deze switch statement
                 switch (exception.Number)
                 {
                     case 0:
@@ -57,7 +57,7 @@ namespace Aapie
             }
         }
 
-        //Close connection
+        //Zelfde als bovenstaande functie maar dan om verbinding te closen
         private bool CloseConnection()
         {
             try
@@ -73,20 +73,20 @@ namespace Aapie
         }
         public void Insert(string query)
         {
-            //open connection
+            
             if (this.OpenConnection() == true)
             {
-                //create command and assign the query and connection from the constructor
+               //Command maken
                 MySqlCommand cmd = new MySqlCommand(query, connection);
 
-                //Execute command
+                //Command uitvoeren
                 cmd.ExecuteNonQuery();
 
-                //close connection
+                //Verbinding sluiten
                 CloseConnection();
             }
         }
-
+        //Nu staan er alleen nog extreem algemene functies in (zoals de functie insert) deze moeten nog vervangen worden voor functies zoals adduser, dit is te doen door delen van de query aanpasbaar te maken als parameters in de functie
 
     }
 }
