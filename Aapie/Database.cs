@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
+
 //gemaakt met deze tut https://www.codeproject.com/articles/43438/connect-c-to-mysql
 namespace Aapie
 {
@@ -33,12 +35,16 @@ namespace Aapie
         }
         
         //Nu alle instellingen goed staan kan je met deze functie een verbinding naar de database openen, try catch zo ergt ervoor dat het programma niet crasht als er geen verbinding mogelijk is met de database
-        public bool OpenConnection()
+        public async Task<MySqlConnection> OpenConnection()
         {
             try
             {
-                connection.Open();
-                return true;
+                if (connection.State != System.Data.ConnectionState.Open)
+                {
+                    await connection.OpenAsync();
+                }
+                
+                return connection;
             }
             catch (MySqlException exception)
             {
@@ -53,7 +59,7 @@ namespace Aapie
                         Console.WriteLine("Foute credentials");
                         break;
                 }
-                return false;
+                return connection;
             }
         }
 
@@ -71,23 +77,20 @@ namespace Aapie
                 return false;
             }
         }
-        public void Insert(string query)
-        {
-            
-            if (this.OpenConnection() == true)
-            {
-               //Command maken
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-
-                //Command uitvoeren
-                cmd.ExecuteNonQuery();
-
-                //Verbinding sluiten
-                CloseConnection();
-            }
-        }
         //Nu staan er alleen nog extreem algemene functies in (zoals de functie insert) deze moeten nog vervangen worden voor functies zoals adduser, dit is te doen door delen van de query aanpasbaar te maken als parameters in de functie
-
+        public async Task AddUser(User user) {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Connection = await OpenConnection();
+            cmd.CommandText = "INSERT INTO user(username, password, phonenumber) VALUES(@username, @password, @phonenumber)";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.Parameters.AddWithValue("@password", user.Password);
+            cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
+            cmd.ExecuteNonQuery();
+            CloseConnection();
+            
+        }
     }
 }
 
