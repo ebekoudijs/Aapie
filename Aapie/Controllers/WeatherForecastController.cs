@@ -53,14 +53,14 @@ namespace Aapie.Controllers
             return NewUser;
         }
         [HttpPost("post")]
-        public async Task<ActionResult> AddUser([FromBody] User user)
+        public async Task<User> AddUser([FromBody] User user)
         {
 
            
             await _database.AddUser(user);
 
 
-            return Ok("Goeie");
+            return user;
         }
     }
 }
