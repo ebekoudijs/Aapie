@@ -10,6 +10,8 @@ namespace Aapie.Controllers
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
+
+
     {
         private static readonly string[] Summaries = new[]
         {
@@ -17,11 +19,14 @@ namespace Aapie.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly Database _database;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, Database database)
         {
             _logger = logger;
+            _database = database;
         }
+
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -44,15 +49,18 @@ namespace Aapie.Controllers
         public User Test()
         {
             //Database object creeren
-            Database database = new Database();
-            
-            //Insert functie van database gebruiken om sql code te executen
-            database.Insert("INSERT INTO user (username, phonenumber, password) VALUES('Pillip','0633','wachtwoord')");
-
             User NewUser = new User("pietpaulsema69", "johndeere420", "06 12345678");
             return NewUser;
         }
+        [HttpPost("post")]
+        public async Task<ActionResult> AddUser([FromBody] User user)
+        {
+
+           
+            await _database.AddUser(user);
 
 
+            return Ok("Goeie");
+        }
     }
 }
