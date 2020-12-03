@@ -89,7 +89,17 @@ namespace Aapie
             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
             cmd.ExecuteNonQuery();
             CloseConnection();
-            
+        }
+        public async Task RemoveUser(int id)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Connection = await OpenConnection();
+            cmd.CommandText = "DELETE FROM user WHERE id = @id";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            CloseConnection();
         }
     }
 }
