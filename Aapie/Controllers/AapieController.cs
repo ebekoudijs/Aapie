@@ -20,7 +20,7 @@ namespace Aapie.Controllers
             _database = database;
         }
 
-        [HttpGet("test")]
+        [HttpGet("get")]
         public User Test()
         {
             //Database object creeren
