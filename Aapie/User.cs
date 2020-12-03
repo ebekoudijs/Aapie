@@ -17,5 +17,6 @@ namespace Aapie
             Password = PWord;
             PhoneNumber = PNumber;
         }
+        public User() { }
     }
 }
