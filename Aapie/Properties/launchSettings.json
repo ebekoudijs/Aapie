@@ -18,13 +18,13 @@
       }
     },
     "Aapie": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "aapie",
-      "applicationUrl": "http://localhost:5000",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+        "commandName": "Project",
+        "launchBrowser": true,
+        "launchUrl": "aapie",
+        "applicationUrl": "http://192.168.68.116:5000",
+        "environmentVariables": {
+            "ASPNETCORE_ENVIRONMENT": "Development"
+        }
     }
   }
 }
