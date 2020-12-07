@@ -11,14 +11,12 @@ namespace Aapie
 {
     public class Database
     {
-        //datafields initialiseren
         private MySqlConnection connection;
         private string server;
         private string database;
         private string uid;
         private string password;
         
-        //de constructor roept standaard de initliaseer functie aan, welke waardes geeft aan alle nodige datafields voor een verbinding
         public Database() {
             Initialize();
         }
@@ -34,7 +32,6 @@ namespace Aapie
             connection = new MySqlConnection(connectionString);
         }
         
-        //Nu alle instellingen goed staan kan je met deze functie een verbinding naar de database openen, try catch zo ergt ervoor dat het programma niet crasht als er geen verbinding mogelijk is met de database
         public async Task<MySqlConnection> OpenConnection()
         {
             try
@@ -48,7 +45,6 @@ namespace Aapie
             }
             catch (MySqlException exception)
             {
-                //Als er een mysql error is wordt ie doorgegeven naar deze switch statement
                 switch (exception.Number)
                 {
                     case 0:
@@ -64,11 +60,11 @@ namespace Aapie
         }
 
         //Zelfde als bovenstaande functie maar dan om verbinding te closen
-        private bool CloseConnection()
+        private async Task<bool> CloseConnection()
         {
             try
             {
-                connection.Close();
+                await connection.CloseAsync();
                 return true;
             }
             catch (MySqlException ex)
@@ -88,7 +84,7 @@ namespace Aapie
             cmd.Parameters.AddWithValue("@password", user.Password);
             cmd.Parameters.AddWithValue("@phonenumber", user.PhoneNumber);
             cmd.ExecuteNonQuery();
-            CloseConnection();
+            await CloseConnection();
         }
         public async Task RemoveUser(int id)
         {
@@ -99,7 +95,37 @@ namespace Aapie
             cmd.Prepare();
             cmd.Parameters.AddWithValue("@id", id);
             cmd.ExecuteNonQuery();
-            CloseConnection();
+            await CloseConnection();
+        }
+        public async Task<User> GetUser(int id)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Connection = await OpenConnection();
+            cmd.CommandText = "SELECT * FROM user WHERE userID = @id";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@id", id);
+            
+            MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
+
+            bool result = await myReader.ReadAsync();
+
+            if (result)
+            {
+                string username = myReader.GetString("username");
+                string phonenumber = myReader.GetString("phonenumber");
+                User user = new User(username, null, phonenumber);
+                await CloseConnection();
+                return user;
+            }
+            else 
+            {
+                await CloseConnection();
+                User user = new User("test", "test", "test");
+                return null;
+            }
+            
+            
         }
     }
 }
