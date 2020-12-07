@@ -21,17 +21,41 @@ namespace Aapie.Controllers
         }
 
         [HttpGet("get")]
-        public User Test()
+        public async Task<User> GetUser(int id)
         {
-            //Database object creeren
-            User NewUser = new User("pietpaulsema69", "johndeere420", "06 12345678");
-            return NewUser;
+            return await _database.GetUser(id);
         }
-
+        
         [HttpPost("post")]
         public async Task<User> AddUser([FromBody] User user)
         {
             await _database.AddUser(user);
+            return user;
+        }
+    }
+    [ApiController]
+    [Route("Arduino")]
+    public class ArduinoController : ControllerBase
+    {
+        private readonly ArduinoDatabase _arduinodatabase;
+        private readonly ILogger<ArduinoController> _logger;
+        public ArduinoController(ILogger<ArduinoController> logger, ArduinoDatabase arduinodatabase)
+        {
+            _logger = logger;
+            _arduinodatabase = arduinodatabase;
+        }
+
+        [HttpGet("get")]
+        public async Task<string> Get(int left, int right, int straight, int id)
+        {
+            await _arduinodatabase.UpdateData(left, right, straight, id);
+            return "test";
+        }
+
+        [HttpPost("post")]
+        public async Task<User> Post([FromBody] User user)
+        {
+            
             return user;
         }
     }
