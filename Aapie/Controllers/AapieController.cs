@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Aapie;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Aapie.Controllers
 {
     [ApiController]
-    [Route("Aapie")]
+    [Route("aapie")]
     public class AapieController : ControllerBase
     {
+#nullable enable
         private readonly ILogger<AapieController> _logger;
         private readonly Database _database;
 
@@ -21,42 +25,52 @@ namespace Aapie.Controllers
         }
 
         [HttpGet("get")]
-        public async Task<User> GetUser(int id)
+        public async Task<ActionResult> GetUser(int id)
         {
-            return await _database.GetUser(id);
+            string? username = await GetAuthorizeUsername();
+            var user = await _database.GetUser(id);
+
+            if (username != null && user.Username.Equals(username))
+            {
+                return Ok(user);
+            }
+            else
+            {
+                return Problem("Nie hackke    ");
+            }
         }
-        
+
         [HttpPost("post")]
         public async Task<User> AddUser([FromBody] User user)
         {
             await _database.AddUser(user);
             return user;
         }
-    }
-    [ApiController]
-    [Route("Arduino")]
-    public class ArduinoController : ControllerBase
-    {
-        private readonly ArduinoDatabase _arduinodatabase;
-        private readonly ILogger<ArduinoController> _logger;
-        public ArduinoController(ILogger<ArduinoController> logger, ArduinoDatabase arduinodatabase)
+        private async Task<string?> GetAuthorizeUsername()
         {
-            _logger = logger;
-            _arduinodatabase = arduinodatabase;
-        }
+            if (Request.Headers.ContainsKey("Authorization"))
+            {
+                var authHeaderVal = AuthenticationHeaderValue.Parse(Request.Headers["Authorization"]);
 
-        [HttpGet("get")]
-        public async Task<string> Get(int left, int right, int straight, int id)
-        {
-            await _arduinodatabase.UpdateData(left, right, straight, id);
-            return "test";
-        }
+                if (authHeaderVal.Scheme.Equals("basic",
+                            StringComparison.OrdinalIgnoreCase) &&
+                        authHeaderVal.Parameter != null)
+                {
+                    var encoding = Encoding.GetEncoding("iso-8859-1");
+                    string value = encoding.GetString(Convert.FromBase64String(authHeaderVal.Parameter));
+                    string[] values = value.Split(':');
 
-        [HttpPost("post")]
-        public async Task<User> Post([FromBody] User user)
-        {
-            
-            return user;
+                    string authUsername = values[0];
+                    string authPassword = values[1];
+
+                    if (await _database.CheckCredentials(authUsername, authPassword))
+                    {
+                        return authUsername;
+                    }
+                }
+            }
+            return null;
         }
     }
+
 }
