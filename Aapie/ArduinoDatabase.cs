@@ -62,7 +62,6 @@ namespace Aapie
                 return connection;
             }
         }
-
         //Zelfde als bovenstaande functie maar dan om verbinding te closen
         private bool CloseConnection()
         {
@@ -77,7 +76,6 @@ namespace Aapie
                 return false;
             }
         }
- 
         public async Task UpdateData(int left, int right, int straight, int id) {
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = connection;
