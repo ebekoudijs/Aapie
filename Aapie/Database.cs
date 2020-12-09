@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -16,7 +18,6 @@ namespace Aapie
         private string database;
         private string uid;
         private string password;
-        
         public Database() {
             Initialize();
         }
@@ -31,7 +32,6 @@ namespace Aapie
 
             connection = new MySqlConnection(connectionString);
         }
-        
         public async Task<MySqlConnection> OpenConnection()
         {
             try
@@ -58,7 +58,6 @@ namespace Aapie
                 return connection;
             }
         }
-
         //Zelfde als bovenstaande functie maar dan om verbinding te closen
         private async Task<bool> CloseConnection()
         {
@@ -105,9 +104,7 @@ namespace Aapie
             cmd.CommandText = "SELECT * FROM user WHERE userID = @id";
             cmd.Prepare();
             cmd.Parameters.AddWithValue("@id", id);
-            
             MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
-
             bool result = await myReader.ReadAsync();
 
             if (result)
@@ -121,12 +118,36 @@ namespace Aapie
             else 
             {
                 await CloseConnection();
-                User user = new User("test", "test", "test");
                 return null;
             }
-            
-            
         }
+        public async Task<bool> CheckCredentials(string username, string password)
+        {
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Connection = await OpenConnection();
+            cmd.CommandText = "SELECT * FROM user WHERE username = @username AND password = @password";
+            cmd.Prepare();
+            cmd.Parameters.AddWithValue("@username", username);
+            cmd.Parameters.AddWithValue("@password", password);
+            MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
+            bool result = await myReader.ReadAsync();
+            if (result)
+            {
+                string dbusername = myReader.GetString("username");
+                string dbphonenumber = myReader.GetString("phonenumber");
+                await myReader.CloseAsync();
+                User loggedUser = new User(dbusername, null, dbphonenumber);
+                await CloseConnection();
+                return true;
+            }
+            else
+            {
+                await CloseConnection();
+                return false;
+            }
+        }
+        
     }
 }
 
