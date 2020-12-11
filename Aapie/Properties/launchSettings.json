@@ -30,7 +30,7 @@
             "commandName": "Project",
             "launchBrowser": true,
             "launchUrl": "aapie",
-            "applicationUrl": "http://145.93.128.139:5000",
+            "applicationUrl": "http://145.93.128.113:5000",
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
