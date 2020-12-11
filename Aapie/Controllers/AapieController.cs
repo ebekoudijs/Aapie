@@ -24,13 +24,24 @@ namespace Aapie.Controllers
             _database = database;
         }
 
-        [HttpGet("get")]
-        public async Task<ActionResult> GetUser(int id)
+        [HttpGet("getdrinks")]
+        public async Task<List<Product>> GetDrinks()
         {
-            string? username = await GetAuthorizeUsername();
-            var user = await _database.GetUser(id);
+            return await _database.GetDrinks();
+        }
 
-            if (username != null && user.Username.Equals(username))
+
+
+
+        /* [HttpGet("get")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            User user = await GetAuthorizeUser();
+            string? username = user?.Username;
+
+            var user2 = await _database.GetUser(id);
+
+            if (username != null && user2.Username.Equals(username))
             {
                 return Ok(user);
             }
@@ -39,14 +50,28 @@ namespace Aapie.Controllers
                 return Problem("Nie hackke    ");
             }
         }
-
-        [HttpPost("post")]
-        public async Task<User> AddUser([FromBody] User user)
+        */
+        [HttpPost("createuser")]
+        public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             await _database.AddUser(user);
-            return user;
+            return Ok(user);
         }
-        private async Task<string?> GetAuthorizeUsername()
+        
+        [HttpPost("getuser")]
+        public async Task<IActionResult> Login() {
+            var user = await GetAuthorizeUser();
+
+            if (user == null)
+            {
+                return Problem("Failed to authenticate");
+            }
+            else
+            {
+                return Ok(user);
+            }
+        }
+        private async Task<User?> GetAuthorizeUser()
         {
             if (Request.Headers.ContainsKey("Authorization"))
             {
@@ -65,12 +90,14 @@ namespace Aapie.Controllers
 
                     if (await _database.CheckCredentials(authUsername, authPassword))
                     {
-                        return authUsername;
+                        User user = new User(authUsername, authPassword, null);
+                        return user;
                     }
                 }
             }
             return null;
         }
+
     }
 
 }
