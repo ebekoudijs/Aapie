@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 //gemaakt met deze tut https://www.codeproject.com/articles/43438/connect-c-to-mysql
 namespace Aapie
 {
-    public class Database
+    public class Database 
     {
         private MySqlConnection connection;
         private string server;
@@ -147,7 +147,31 @@ namespace Aapie
                 return false;
             }
         }
-        
+        public async Task<List<Product>> GetDrinks() {
+            List<Product> Productlist = new List<Product>();
+
+
+            MySqlCommand cmd = new MySqlCommand();
+            cmd.Connection = connection;
+            cmd.Connection = await OpenConnection();
+            cmd.CommandText = "SELECT * FROM products";
+            cmd.Prepare();
+            MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
+            while (await myReader.ReadAsync() )
+            {
+                string name = myReader.GetString("name");
+                string Description = myReader.GetString("description");
+                double price = myReader.GetDouble("price");
+                double AmountCl = myReader.GetDouble("amountcl");
+                int Stock = myReader.GetInt32("stock");
+                double AlcPercent = myReader.GetDouble("alcpercent");
+                Product drink = new Product(name, price, AlcPercent, Stock, AmountCl, Description);
+                Productlist.Add(drink);
+            }
+            await myReader.CloseAsync();
+            await CloseConnection();
+            return Productlist;
+        }
     }
 }
 
