@@ -13,7 +13,7 @@ namespace Aapie
         public int Stock { get; set; }
         public double AmountCl { get; set; }
         public string Description { get; set; }
-        public Product(double price, string name, double alcPercent, int stock, double amountCl, string description) {
+        public Product(string name, double price, double alcPercent, int stock, double amountCl, string description) {
             Price = price;
             Name = name;
             AlcPercent = alcPercent;
