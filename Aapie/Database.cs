@@ -46,7 +46,7 @@ namespace Aapie
                 switch (exception.Number)
                 {
                     case 0:
-                        Console.WriteLine("Datavase server is offline");
+                        Console.WriteLine("Database server is offline");
                         break;
 
                     case 1045:
