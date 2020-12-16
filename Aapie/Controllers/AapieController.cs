@@ -29,28 +29,20 @@ namespace Aapie.Controllers
         {
             return await _database.GetDrinks();
         }
-
-
-
-
-        /* [HttpGet("get")]
-        public async Task<IActionResult> GetUser(int id)
+        [HttpPost("addorder")]
+        public async Task<Order?> AddOrder([FromBody] Order order)
         {
-            User user = await GetAuthorizeUser();
-            string? username = user?.Username;
-
-            var user2 = await _database.GetUser(id);
-
-            if (username != null && user2.Username.Equals(username))
+            var user = GetAuthorizeUser();
+            if (user != null)
             {
-                return Ok(user);
+                await _database.addOrder(order, await user);
+                return order;
             }
-            else
-            {
-                return Problem("Nie hackke    ");
+            else {
+                return null;
             }
         }
-        */
+
         [HttpPost("createuser")]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
@@ -58,7 +50,7 @@ namespace Aapie.Controllers
             return Ok(user);
         }
         
-        [HttpPost("getuser")]
+        [HttpGet("getuser")]
         public async Task<IActionResult> Login() {
             var user = await GetAuthorizeUser();
 
@@ -87,17 +79,15 @@ namespace Aapie.Controllers
 
                     string authUsername = values[0];
                     string authPassword = values[1];
+                    User dbuser = await _database.CheckCredentials(authUsername, authPassword);
 
-                    if (await _database.CheckCredentials(authUsername, authPassword))
+                    if (dbuser != null)
                     {
-                        User user = new User(authUsername, authPassword, null);
-                        return user;
+                        return dbuser;
                     }
                 }
             }
             return null;
         }
-
     }
-
 }
