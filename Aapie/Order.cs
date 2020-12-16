@@ -7,22 +7,20 @@ namespace Aapie
 {
     public class Order
     {
-        public double Totalprice() {
+        public double Totalprice()
+        {
             double totalprice = 12;
             return totalprice;
         }
+        public Order()
+        {
+
+        }
+        public List<OrderLine> OrderLines { get; set;}
         public DateTime Date { get; set; }
         public string Message { get; set; }
         public Table Table { get; set; }
-        public List<Product> Products { get; set; }
-        public string Status { get; set; }
+        public User User { get; set; }
 
-        public Order(DateTime date, string message, Table table, List<Product> products, string status) {
-            Date = date;
-            Message = message;
-            Table = table;
-            Products = products;
-            Status = status;
-        }
-    }   
+    }
 }
