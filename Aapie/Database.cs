@@ -71,9 +71,7 @@ namespace Aapie
             }
         }
         public async Task<User> AddUser(User user) {
-            Guid guid = Guid.NewGuid();
-            string guidString = guid.ToString();
-            user.UserId = guidString;
+            user.UserId = Guid.NewGuid().ToString();
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = await OpenConnection();
             cmd.CommandText = "INSERT INTO klant(UserID, Naam, Geslacht, Leeftijd, Email, Wachtwoord) VALUES(@userID, @username, @geslacht, @leeftijd, @email, @password)";
