@@ -93,7 +93,9 @@ namespace Aapie
             cmd.Connection = await OpenConnection();
             cmd.CommandText = "DELETE FROM user WHERE id = @id";
             cmd.Prepare();
+
             cmd.Parameters.AddWithValue("@id", id);
+
             cmd.ExecuteNonQuery();
             await CloseConnection();
         }
@@ -104,8 +106,10 @@ namespace Aapie
             cmd.Connection = await OpenConnection();
             cmd.CommandText = "SELECT * FROM klant WHERE Naam = @username AND Wachtwoord = @password";
             cmd.Prepare();
+
             cmd.Parameters.AddWithValue("@username", username);
             cmd.Parameters.AddWithValue("@password", password);
+
             MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
             bool result = await myReader.ReadAsync();
             if (result)
@@ -134,6 +138,7 @@ namespace Aapie
             cmd.Connection = await OpenConnection();
             cmd.CommandText = "SELECT * FROM artikel";
             cmd.Prepare();
+
             MySqlDataReader myReader = (await cmd.ExecuteReaderAsync() as MySqlDataReader);
             while (await myReader.ReadAsync())
             {
@@ -154,33 +159,43 @@ namespace Aapie
         public async Task<Order> addOrder(Order order, User user) {
             Guid guid = Guid.NewGuid();
             string guidString = guid.ToString();
+
             foreach (var orderline in order.OrderLines)
             {
                 await addOrderLine(orderline, guidString);
             }
+
+            
+
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = await OpenConnection();
-            cmd.CommandText = "INSERT INTO bestelling(OrderID, UserID, MdwID, TableID, RobotID) VALUES(@OrderID, @UserID, @MdwID, @TableID, @RobotID)";
+            cmd.CommandText = "INSERT INTO bestelling(OrderID, UserID, MdwID, TableID, RobotID, DatumBestel) VALUES(@OrderID, @UserID, @MdwID, @TableID, @RobotID, @date)";
             cmd.Prepare();
+
             cmd.Parameters.AddWithValue("@OrderID", guidString);
             cmd.Parameters.AddWithValue("@UserID", user.UserId);
-            cmd.Parameters.AddWithValue("@MdwID", 5);
-            cmd.Parameters.AddWithValue("@TableID", 5);
-            cmd.Parameters.AddWithValue("@RobotID", 5);
+            cmd.Parameters.AddWithValue("@MdwID", 1);
+            cmd.Parameters.AddWithValue("@TableID", 1);
+            cmd.Parameters.AddWithValue("@RobotID", 1);
+            cmd.Parameters.AddWithValue("@date", order.Date);
+
+            cmd.ExecuteNonQuery();
             return order;
         }
         public async Task<OrderLine> addOrderLine(OrderLine orderLine, string guidString) {
-            Order order = new Order();
+
             MySqlCommand cmd = new MySqlCommand();
             cmd.Connection = await OpenConnection();
             cmd.CommandText = "INSERT INTO bestelregel(OrderID, DrankID, Aantal) VALUES(@OrderID, @DrankID, @Quantity)";
             cmd.Prepare();
+
             cmd.Parameters.AddWithValue("@OrderID", guidString);
-            cmd.Parameters.AddWithValue("@DrankID", orderLine.Product.Id);
+            cmd.Parameters.AddWithValue("@DrankID", orderLine.ProductId);
             cmd.Parameters.AddWithValue("@Quantity", orderLine.Quantity);
+
+            cmd.ExecuteNonQuery();
 
             return null;
         }
     }
 }
-
