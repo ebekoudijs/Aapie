@@ -7,11 +7,11 @@ namespace Aapie
 {
     public class OrderLine
     {
-        public OrderLine(Product product)
+        public OrderLine()
         {
-            Product Product = product;
+            
         }
-        public Product Product { get; set; }
+        public int ProductId { get; set; }
         public int Quantity { get; set; }
     }   
 }
