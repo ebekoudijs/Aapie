@@ -32,10 +32,11 @@ namespace Aapie.Controllers
         [HttpPost("addorder")]
         public async Task<Order?> AddOrder([FromBody] Order order)
         {
-            var user = GetAuthorizeUser();
-            if (user != null)
+            var user = await GetAuthorizeUser();
+            order.User = user;
+            if (order.User != null)
             {
-                await _database.addOrder(order, await user);
+                await _database.addOrder(order, order.User);
                 return order;
             }
             else {
