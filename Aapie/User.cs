@@ -19,11 +19,27 @@ namespace Aapie
 
         public User()
         {
-            Gender = "Man";
-            Age = 25;
-            Email = "Test";
+            
         }
+        public void Gendercheck() {
 
+            if (Gender == "Female")
+            {
+                Gender = "Vrouw";
+            }
+            else if (Gender == "Male")
+            {
+                Gender = "Man";
+            }
+            else if (Gender == "Other")
+            {
+                Gender = "Anders";
+            }
+            else
+            {
+                Gender = null;
+            }
+        }
         public string UserId { get; set; }
         public string Username { get; set; }
         public string Gender { get; set; }
