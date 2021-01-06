@@ -17,17 +17,22 @@ namespace Aapie.Controllers
 #nullable enable
         private readonly ILogger<AapieController> _logger;
         private readonly Database _database;
+        private readonly IUserService _userService;
+        private readonly IOrderService _orderService;
 
-        public AapieController(ILogger<AapieController> logger, Database database)
+        public AapieController(ILogger<AapieController> logger, Database database, IUserService userService, IOrderService orderService)
         {
             _logger = logger;
             _database = database;
+            _userService = userService;
+            _orderService = orderService;
+
         }
 
         [HttpGet("getdrinks")]
-        public async Task<List<Product>> GetDrinks()
+        public async Task<List<Product>> GetProducts()
         {
-            return await _database.GetDrinks();
+            return await _database.GetProducts();
         }
         [HttpPost("addorder")]
         public async Task<Order?> AddOrder([FromBody] Order order)
@@ -47,6 +52,7 @@ namespace Aapie.Controllers
         [HttpPost("createuser")]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
+            user.Gendercheck();
             await _database.AddUser(user);
             return Ok(user);
         }
@@ -80,7 +86,7 @@ namespace Aapie.Controllers
 
                     string authUsername = values[0];
                     string authPassword = values[1];
-                    User dbuser = await _database.CheckCredentials(authUsername, authPassword);
+                    User dbuser = await _database.Authenticate(authUsername, authPassword);
 
                     if (dbuser != null)
                     {
