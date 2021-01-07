@@ -7,6 +7,14 @@ namespace Aapie
 {
     public class User
     {
+        public string UserId { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public int Age { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+
+        public User() { }
         public User(string userId, string gender, int age, string email, string password, string name)
         {
             UserId = userId;
@@ -16,8 +24,6 @@ namespace Aapie
             Password = password;
             Name = name;
         }
-
-        public User(){}
 
         public void Gendercheck() {
 
@@ -38,11 +44,6 @@ namespace Aapie
                 Gender = null;
             }
         }
-        public string UserId { get; set; }
-        public string Name { get; set; }
-        public string Gender { get; set; }
-        public int Age { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
+
     }
 }
