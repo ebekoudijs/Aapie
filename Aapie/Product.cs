@@ -11,8 +11,10 @@ namespace Aapie
         public double Price { get; set; }
         public string Name { get; set; }
         public double AlcPercent { get; set; }
+        //Alcohol percentage
         public int Stock { get; set; }
         public double AmountCl { get; set; }
+        //Amount in centiliter
         public string Description { get; set; }
         public Product(int productId, string name, double price, double alcPercent, int stock, double amountCl, string description) {
             ProductId = productId;
