@@ -34,7 +34,7 @@ namespace Aapie.Controllers
             return Ok(user);
         }
         
-        [HttpGet("getuser")]
+        [HttpGet("user")]
         public async Task<IActionResult> Login() {
             var user = await GetAuthorizeUser();
 

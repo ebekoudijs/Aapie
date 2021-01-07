@@ -23,13 +23,13 @@ namespace Aapie.Controllers
             _userService = userService;
             _orderService = orderService;
         }
-        [HttpGet("getdrinks")]
+        [HttpGet("drinks")]
         public async Task<List<Product>> GetProducts()
         {
             return await _database.GetProducts();
         }
 
-        [HttpGet("getorders")]
+        [HttpGet("orders")]
         public async Task<List<Aapie.Order>> GetOrders()
         {
             var user = await GetAuthorizeUser();
@@ -37,7 +37,7 @@ namespace Aapie.Controllers
         }
 
         [HttpPost("addorder")]
-        public async Task<IActionResult?> AddOrder([FromBody] Aapie.Order order)
+        public async Task<IActionResult> AddOrder([FromBody] Aapie.Order order)
         {
             var user = await GetAuthorizeUser();
             order.User = user;
