@@ -10,6 +10,6 @@ namespace Aapie
         Task<User> AddUser(User user);
         Task RemoveUser(string id);
         Task<User> GetUser(string id);
-        Task<User> ChangeUser(User user);
+        Task<User> AlterUser(User user);
     }
 }

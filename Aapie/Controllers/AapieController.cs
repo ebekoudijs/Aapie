@@ -34,18 +34,26 @@ namespace Aapie.Controllers
         {
             return await _database.GetProducts();
         }
+
+        [HttpGet("getorders")]
+        public async Task<List<Order>> GetOrders()
+        {
+            var user = await GetAuthorizeUser();
+            return await _orderService.GetOrders(user.UserId);
+        }
+
         [HttpPost("addorder")]
-        public async Task<Order?> AddOrder([FromBody] Order order)
+        public async Task<IActionResult?> AddOrder([FromBody] Order order)
         {
             var user = await GetAuthorizeUser();
             order.User = user;
             if (order.User != null)
             {
-                await _database.addOrder(order, order.User);
-                return order;
+                await _database.AddOrder(order, order.User.UserId);
+                return Ok(order);
             }
             else {
-                return null;
+                return BadRequest("Invalid credentials");
             }
         }
 
@@ -70,6 +78,7 @@ namespace Aapie.Controllers
                 return Ok(user);
             }
         }
+
         private async Task<User?> GetAuthorizeUser()
         {
             if (Request.Headers.ContainsKey("Authorization"))
@@ -84,9 +93,9 @@ namespace Aapie.Controllers
                     string value = encoding.GetString(Convert.FromBase64String(authHeaderVal.Parameter));
                     string[] values = value.Split(':');
 
-                    string authUsername = values[0];
+                    string authEmail = values[0];
                     string authPassword = values[1];
-                    User dbuser = await _database.Authenticate(authUsername, authPassword);
+                    User dbuser = await _database.Authenticate(authEmail, authPassword);
 
                     if (dbuser != null)
                     {

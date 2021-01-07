@@ -7,7 +7,8 @@ namespace Aapie
 {
     public interface IOrderService
     {
-        Task<Order> AddOrder(Order order, User user);
-        Task UpdateDeliveryDate(string orderId);
+        Task<Order> AddOrder(Order order, string userId);
+        Task<List<Order>> GetOrders(string userid);
+        Task SetDeliveryDate(string orderId);
     }
 }

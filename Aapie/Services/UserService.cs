@@ -26,7 +26,7 @@ namespace Aapie
         {
             await _database.RemoveUser(id);
         }
-        public async Task<User> ChangeUser(User user)
+        public async Task<User> AlterUser(User user)
         {
             return new User();
         }

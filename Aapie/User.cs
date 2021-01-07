@@ -7,31 +7,29 @@ namespace Aapie
 {
     public class User
     {
-        public User(string UID, string username, string gender, int age, string email, string password)
+        public User(string userId, string gender, int age, string email, string password, string name)
         {
-            UserId = UID;
-            Username = username;
+            UserId = userId;
             Gender = gender;
             Age = age;
             Email = email;
             Password = password;
+            Name = name;
         }
 
-        public User()
-        {
-            
-        }
+        public User(){}
+
         public void Gendercheck() {
 
-            if (Gender == "Female")
+            if (Gender.Equals("Female") )
             {
                 Gender = "Vrouw";
             }
-            else if (Gender == "Male")
+            else if (Gender.Equals("Male"))
             {
                 Gender = "Man";
             }
-            else if (Gender == "Other")
+            else if (Gender.Equals("Other"))
             {
                 Gender = "Anders";
             }
@@ -41,7 +39,7 @@ namespace Aapie
             }
         }
         public string UserId { get; set; }
-        public string Username { get; set; }
+        public string Name { get; set; }
         public string Gender { get; set; }
         public int Age { get; set; }
         public string Email { get; set; }
