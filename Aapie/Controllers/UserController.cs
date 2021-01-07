@@ -11,50 +11,19 @@ using System.Threading.Tasks;
 namespace Aapie.Controllers
 {
     [ApiController]
-    [Route("aapie")]
-    public class AapieController : ControllerBase
+    [Route("user")]
+    public class UserController : ControllerBase
     {
 #nullable enable
-        private readonly ILogger<AapieController> _logger;
+        private readonly ILogger<UserController> _logger;
         private readonly Database _database;
         private readonly IUserService _userService;
-        private readonly IOrderService _orderService;
 
-        public AapieController(ILogger<AapieController> logger, Database database, IUserService userService, IOrderService orderService)
+        public UserController(ILogger<UserController> logger, Database database, IUserService userService, IOrderService orderService)
         {
             _logger = logger;
             _database = database;
             _userService = userService;
-            _orderService = orderService;
-
-        }
-
-        [HttpGet("getdrinks")]
-        public async Task<List<Product>> GetProducts()
-        {
-            return await _database.GetProducts();
-        }
-
-        [HttpGet("getorders")]
-        public async Task<List<Order>> GetOrders()
-        {
-            var user = await GetAuthorizeUser();
-            return await _orderService.GetOrders(user.UserId);
-        }
-
-        [HttpPost("addorder")]
-        public async Task<IActionResult?> AddOrder([FromBody] Order order)
-        {
-            var user = await GetAuthorizeUser();
-            order.User = user;
-            if (order.User != null)
-            {
-                await _database.AddOrder(order, order.User.UserId);
-                return Ok(order);
-            }
-            else {
-                return BadRequest("Invalid credentials");
-            }
         }
 
         [HttpPost("createuser")]
