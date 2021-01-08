@@ -6,14 +6,15 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Aapie;
 
 namespace Aapie.Controllers
 {
-    [Route("order")]
+#nullable enable
+    [Route("orders")]
     [ApiController]
     public class OrderController : ControllerBase
     {
-        
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
         private readonly Database _database;
@@ -29,13 +30,12 @@ namespace Aapie.Controllers
             return await _database.GetProducts();
         }
 
-        [HttpGet("orders")]
+        [HttpGet]
         public async Task<List<Aapie.Order>> GetOrders()
         {
             var user = await GetAuthorizeUser();
             return await _orderService.GetOrders(user.UserId);
         }
-
         [HttpPost("addorder")]
         public async Task<IActionResult> AddOrder([FromBody] Aapie.Order order)
         {

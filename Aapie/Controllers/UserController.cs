@@ -7,14 +7,17 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http.Filters;
+#nullable enable
 
 namespace Aapie.Controllers
 {
     [ApiController]
     [Route("user")]
+
     public class UserController : ControllerBase
     {
-#nullable enable
+
         private readonly ILogger<UserController> _logger;
         private readonly Database _database;
         private readonly IUserService _userService;
@@ -25,15 +28,15 @@ namespace Aapie.Controllers
             _database = database;
             _userService = userService;
         }
-
+        
         [HttpPost("createuser")]
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             user.Gendercheck();
-            await _database.AddUser(user);
+            await _userService.AddUser(user);
             return Ok(user);
         }
-        
+
         [HttpGet("user")]
         public async Task<IActionResult> Login() {
             var user = await GetAuthorizeUser();
